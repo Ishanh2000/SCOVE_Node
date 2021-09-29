@@ -9,9 +9,9 @@ This repository is just one part of the complete project. The other repository (
 
 ### Resources
 
-Web Application Repository: <repolink>
-Similar Paper: https://www.jetir.org/view?paper=JETIR2107233
-Others: https://1drv.ms/u/s!ApA9gmreFg4nhcpSkhy20n7BuzpWQA?e=R1qTxy
+- Web Application Repository: <repolink>
+- Similar Paper: https://www.jetir.org/view?paper=JETIR2107233
+- Others: https://1drv.ms/u/s!ApA9gmreFg4nhcpSkhy20n7BuzpWQA?e=R1qTxy
 
 
 ### Team Members
