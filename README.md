@@ -5,11 +5,11 @@ A smart entrance device that detects temperature of the subject (face detection 
 
 The node will be a Raspberry Pi 4 Module, integrated with Pi Camera, InfraRed temperature sensor and proximity/motion/ultrasonic sensor. Further additions are possible too.
 
-This repository is just one part of the complete project. The other repository (<repolink>) is an Angual web application which communicates with our node(s).
+This repository is just one part of the complete project. The other repository [SCOVE_Web](https://github.com/rkchaudhary4/SCOVE_Web) is an Angual web application which communicates with our node(s).
 
 ### Resources
 
-- Web Application Repository: <repolink>
+- Web Application Repository: https://github.com/rkchaudhary4/SCOVE_Web
 - Similar Paper: https://www.jetir.org/view?paper=JETIR2107233
 - Others: https://1drv.ms/u/s!ApA9gmreFg4nhcpSkhy20n7BuzpWQA?e=R1qTxy
 
