@@ -11,30 +11,16 @@ from prox import isMotion
 IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
 
-# def clearLCD(): pass # import this
 
-# def writeLCD(s): pass # import this
-
-# def rewriteLCD(s): # import this
-#   print(s)
-
-# def getTemperature(): # import this
-#   return 30.0
-
-# def isMotion(): # import this
-#   return True
-
-def capture(imgPath): # import this
+def capture(imgPath):
   v = cv2.VideoCapture(0)
   _, img = v.read()
-  # cv2.namedWindow("cam-test")
-  # cv2.imshow("cam-test", img)
-  # cv2.waitKey(0)
-  # cv2.destroyWindow("cam-test")
   cv2.imwrite(imgPath, img)
 
 
 def main():
+  print("#" * 50)
+
   while True:
     if not isMotion():
       sleep(0.05)
@@ -57,7 +43,7 @@ def main():
     
     isMischief = (faceMaskStatus == None)
 
-    print('# queue(start, "Phase 1", phase_1_img, isMischief) # will delete images later')
+    # print('# queue(start, "Phase 1", phase_1_img, isMischief) # will delete images later')
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -83,7 +69,7 @@ def main():
     
     isMischief = (faceRecogStatus == None)
 
-    print('# queue(start, "Phase 2", phase_2_img, isMischief) # will delete images later')
+    # print('# queue(start, "Phase 2", phase_2_img, isMischief) # will delete images later')
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -114,7 +100,7 @@ def main():
     
     isMischief = (faceMaskTempStatus == None)
 
-    print('# queue(start, "Phase 3", phase_3_img, isMischief) # will delete images later')
+    # print('# queue(start, "Phase 3", phase_3_img, isMischief) # will delete images later')
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")

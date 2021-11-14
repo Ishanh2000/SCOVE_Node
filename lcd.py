@@ -9,9 +9,11 @@ def clearLCD():
 	lcd.clear()
 
 def writeLCD(s = ""):
+	print(s)
 	lcd.write_string(s)
 
 def rewriteLCD(s = ""):
+	print(s)
 	lcd.clear()
 	lcd.write_string(s)
 
