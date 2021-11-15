@@ -43,7 +43,7 @@ def main():
     
     isMischief = (faceMaskStatus == None)
 
-    # print('# queue(start, "Phase 1", phase_1_img, isMischief) # will delete images later')
+    # queueEvent(start, phase=1, phase_1_img, isMischief) # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -69,7 +69,7 @@ def main():
     
     isMischief = (faceRecogStatus == None)
 
-    # print('# queue(start, "Phase 2", phase_2_img, isMischief) # will delete images later')
+    # queueEvent(start, phase=2, phase_2_img, isMischief) # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -100,7 +100,7 @@ def main():
     
     isMischief = (faceMaskTempStatus == None)
 
-    # print('# queue(start, "Phase 3", phase_3_img, isMischief) # will delete images later')
+    # queueEvent(start, phase=3, phase_3_img, isMischief) # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -112,6 +112,8 @@ def main():
     disallowReason = ""
     if faceMaskTempStatus["maskLabel"] != "masked": disallowReason += "No/Improper mask\r\n"
     if avg_t > TEMPERATURE_THRESHOLD: disallowReason += "High temp.\r\n"
+
+    # queueAttendance(start, time(), faceRecogStatus["faceLabel"], avg_t, faceMaskTempStatus["maskLabel"], disallowReason)
 
     if disallowReason == "": rewriteLCD("Please enter")
     else:
