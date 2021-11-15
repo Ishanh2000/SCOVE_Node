@@ -25,24 +25,19 @@ def events():
       data = None
       for f in request.files:
         if f != "json": request.files[f].save(IMG_PATH + f)
-        else: data = json.loads(request.files["json"].read())
+        else: data = json.loads(request.files["json"].read()) # 'start', 'phase', 'isMischief', 'images'
       
-      # data["start"], data["phase"], data["isMischief"], data["images"]
-      print("\nHERE_DATA\n")
+
       x = db.events.find_one({ "start" : data["start"] })
       if x == None:
-        print("\nHERE-IF\n")
         db.events.insert_one({
           "start" : data["start"],
           f"phase_{data['phase']}" : { "isMischief" : data["isMischief"], "images" : data["images"] }
         })
       else:
-        print("\nHERE-ELSE\n")
         db.events.update_one( { "_id" : x["_id"] }, { "$set" : {
           f"phase_{data['phase']}" : { "isMischief" : data["isMischief"], "images" : data["images"] }
         } }, upsert=False)
-
-      print("\nHERE\n")
 
       # if phase 2 - take optimistic attendance if not isMischief
       if (data["phase"] == 2) and not data["isMischief"]:

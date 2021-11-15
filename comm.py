@@ -5,7 +5,8 @@ import requests
 from time import sleep, time
 from threading import Thread
 
-SERVER_URI = "http://127.0.0.1:5000"
+SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
+# SERVER_URI = "http://127.0.0.1:5000"
 IMG_PATH = "./img/"
 
 def queueEvent(start, phase, imgBag, isMischief):

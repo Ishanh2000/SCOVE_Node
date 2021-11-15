@@ -2,11 +2,15 @@
 import cv2
 import numpy as np
 from time import time, sleep
+from threading import Thread
+
 from infer import detectFaceAndMask, recognizeFace
 
 from lcd import clearLCD, writeLCD, rewriteLCD
 from mlx import getTemperature
 from prox import isMotion
+
+from comm import queueEvent, queueAttendance
 
 IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
@@ -43,7 +47,7 @@ def main():
     
     isMischief = (faceMaskStatus == None)
 
-    # queueEvent(start, phase=1, phase_1_img, isMischief) # will delete images later
+    Thread(target = queueEvent, args=(start, 1, phase_1_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -69,7 +73,7 @@ def main():
     
     isMischief = (faceRecogStatus == None)
 
-    # queueEvent(start, phase=2, phase_2_img, isMischief) # will delete images later
+    Thread(target = queueEvent, args=(start, 2, phase_2_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -100,7 +104,7 @@ def main():
     
     isMischief = (faceMaskTempStatus == None)
 
-    # queueEvent(start, phase=3, phase_3_img, isMischief) # will delete images later
+    Thread(target = queueEvent, args=(start, 3, phase_3_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -113,7 +117,7 @@ def main():
     if faceMaskTempStatus["maskLabel"] != "masked": disallowReason += "No/Improper mask\r\n"
     if avg_t > TEMPERATURE_THRESHOLD: disallowReason += "High temp.\r\n"
 
-    # queueAttendance(start, time(), faceRecogStatus["faceLabel"], avg_t, faceMaskTempStatus["maskLabel"], disallowReason)
+    Thread(target = queueAttendance, args=(start, time(), faceRecogStatus["faceLabel"], avg_t, faceMaskTempStatus["maskLabel"], disallowReason)).start()
 
     if disallowReason == "": rewriteLCD("Please enter")
     else:
