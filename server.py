@@ -3,8 +3,12 @@
 from flask_pymongo import PyMongo
 from flask import Flask, jsonify, request
 import json
+from bson import json_util
+from infer import face_labels
+from time import time
 
 IMG_PATH = "./img/"
+DAY = 86400 # length of a day in seconds
 
 app = Flask(__name__)
 mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/scove")
@@ -63,7 +67,32 @@ def events():
 @app.route("/attendance", methods=["GET", "POST", "DELETE"])
 def attendance():
   if request.method == "GET":
-    return "GETTER"
+    args = dict(request.args)
+    _from, _to, _expand, _person = args.get("from"), args.get("to"), args.get("expand"), args.get("person")
+
+    try:
+      if _from: _from = float(_from)
+      if _to: _to = float(_to)
+      if _expand not in [ None, "0", "1" ]: raise Exception()
+      _expand = (_expand == "1")
+    except:
+      return "Expected format: { from (float), to (float), expand (0/1), person (string) }", 400
+    
+    if _from is None and _to is None: _to = time(); _from = _to - (2*DAY)
+    elif _from is None: _from = _to - (2*DAY)
+    elif _to is None: _to = _from + (2*DAY)
+
+    if ((_to-_from) > (2*DAY)) and not _expand:
+      return "Query interval larger than 48 hrs. Set \"expand=1\" for larger intervals.", 400
+    
+    qry = { "attTime" : { "$gte" : _from, "$lte" : _to } } # query
+    if _person: qry["faceLabel"] = _person
+    q = db.att.find(qry)
+
+    return {
+      "att" : json.loads(json.dumps(list(q), default=json_util.default)), # TODO: kindly simplify this - code should not be very complicated
+      "all" : face_labels
+    }
 
   if request.method == "POST":
     try:
