@@ -9,6 +9,8 @@ from infer import face_labels
 from time import time
 from face_register import startTraining
 from threading import Thread
+from os.path import getmtime
+from base64 import b64encode
 
 IMG_PATH = "./img/"
 DAY = 86400 # length of a day in seconds
@@ -111,19 +113,37 @@ def attendance():
 
 
 #### REGISTER ####
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 @cross_origin()
 def register():
-  if request.method != "POST": return "Bad Request", 400
-  # N = students, M images per student
-  # { "train" : [
-  #   { "name" : "imisra", "files" : ['..', '..'] },
-  #   { "name" : "tulika", "files" : ['..', '..'] },
-  # ] }
+  if request.method == "POST":
+    try:
+      Thread(target=startTraining, args=(request.json["train"],)).start()
+      return "Resource Allocated. Training Started.", 201
 
-  try:
-    Thread(target=startTraining, args=(request.json["train"],)).start()
-    return "Resource Allocated. Training Started.", 201
+    except:
+      return "Bad Request Format: Expected field \"train\" - an array", 400  
+  
+  if request.method == "GET":
+    return {
+      "faces" : {
+        "modified" : getmtime("labels/face_labels.txt"),
+        "content" : b64encode(open("labels/face_labels.txt", "rb").read()).decode("ascii")
+      },
+      "svc" : {
+        "modified" : getmtime("models/svc.pkl"),
+        "content" : b64encode(open("models/svc.pkl", "rb").read()).decode("ascii")
+      },
+    }
+    
+    # req = requests.get("http://127.0.0.1:5000/register")
+    # resp = req.json()
+    # f_faces = open("labels/face_labels.txt", "wb")
+    # f_svc = open("models/svc.pkl", "wb")
+    # f_faces.write(b64decode(resp["faces"]["content"]))
+    # f_svc.write(b64decode(resp["svc"]["content"]))
+    # f_faces.close()
+    # f_svc.close()
+    
 
-  except:
-    return "Bad Request Format: Expected field \"train\" - an array", 400  
+    

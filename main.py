@@ -1,4 +1,4 @@
-# AUM SHREEGANESHAAYA NAMAH||
+# AUM SHREEGANESHAAYA NAMAH|| AUM SHREEHANUMATE NAMAH||
 import cv2
 import numpy as np
 from time import time, sleep
@@ -127,10 +127,6 @@ def main():
 
     sleep(1)
     clearLCD()
-    
-
-    
-
 
 
 if __name__ == "__main__":
