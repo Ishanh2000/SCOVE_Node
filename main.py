@@ -22,8 +22,6 @@ TEMPERATURE_THRESHOLD = 30.0
 SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
 b = Button(5)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(5, GPIO.IN)
 
 def capture(imgPath):
   v = cv2.VideoCapture(0)
