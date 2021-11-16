@@ -119,7 +119,7 @@ def register():
   if request.method == "POST":
     try:
       Thread(target=startTraining, args=(request.json["train"],)).start()
-      return "Resource Allocated. Training Started.", 201
+      return {"message": "Resource Allocated. Training Started.", "status": 200}
 
     except:
       return "Bad Request Format: Expected field \"train\" - an array", 400  
