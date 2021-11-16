@@ -4,7 +4,7 @@ import pickle
 
 interpreter = tf.lite.Interpreter('models/mobilefacenet.tflite')
 interpreter.allocate_tensors()
-face_classifier = pickle.loads(open('models/svc.pkl', "rb").read())
+face_classifier = pickle.loads(open('models/svc.pkl', "rb").read()) # UPDATABLE
 
 def set_input_tensor_face(input):
     input_details = interpreter.get_input_details()[0]

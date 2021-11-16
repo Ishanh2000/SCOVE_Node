@@ -9,7 +9,7 @@ def load_labels(path):
     return {i: line.strip() for i, line in enumerate(f.readlines())}
 
 mask_labels = load_labels('labels/mask_labels.txt')
-face_labels = load_labels('labels/face_labels.txt')
+face_labels = load_labels('labels/face_labels.txt') # UPDATABLE
 
 face_cascade = cv2.CascadeClassifier()
 face_cascade.load('models/haarcascade_frontalface_default.xml')

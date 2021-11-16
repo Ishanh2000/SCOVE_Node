@@ -3,9 +3,14 @@ import cv2
 import numpy as np
 from time import time, sleep
 from threading import Thread
+import requests
+from base64 import b64decode
+import pickle
 
-from infer import detectFaceAndMask, recognizeFace
+import face_tflite
+import infer
 
+import RPi.GPIO as GPIO
 from lcd import clearLCD, writeLCD, rewriteLCD
 from mlx import getTemperature
 from prox import isMotion
@@ -14,18 +19,52 @@ from comm import queueEvent, queueAttendance
 
 IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
+SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(5, GPIO.IN)
 
 def capture(imgPath):
   v = cv2.VideoCapture(0)
   _, img = v.read()
   cv2.imwrite(imgPath, img)
 
+def getUpdateFlag():
+  n = 5
+  sum = 0
+  for _ in range(n):
+    sum += (1 - GPIO.input(5)) # input is 1 iff button is not pressed
+    sleep(0.02) # 20 ms
+  return (sum/n) >= 0.5
+
 
 def main():
   print("#" * 50)
 
   while True:
+    
+    if getUpdateFlag():
+      rewriteLCD("Please remove\r\nyour finger")
+      while getUpdateFlag(): sleep(0.05)
+      rewriteLCD("Updating...")
+
+      req = requests.get(SERVER_URI + "/register")
+      resp = req.json()
+      f_faces = open("labels/face_labels.txt", "wb")
+      f_svc = open("models/svc.pkl", "wb")
+      f_faces.write(b64decode(resp["faces"]["content"]))
+      f_svc.write(b64decode(resp["svc"]["content"]))
+      f_faces.close()
+      f_svc.close()
+
+      # RECOMPUTE UPDATABLES
+      face_tflite.face_classifier = pickle.loads(open('models/svc.pkl', "rb").read())
+      infer.face_labels = infer.load_labels('labels/face_labels.txt')
+
+      rewriteLCD("Updated!")
+      sleep(1)
+
+
     if not isMotion():
       sleep(0.05)
       continue
@@ -40,7 +79,7 @@ def main():
     for i in range(3): # maximum three attempts (spacing = 0.5s) to detect face and mask
       img_name = f"{start}_p1_{len(phase_1_img)}.png"
       capture(IMG_PATH + img_name)
-      faceMaskStatus = detectFaceAndMask(IMG_PATH + img_name)
+      faceMaskStatus = infer.detectFaceAndMask(IMG_PATH + img_name)
       phase_1_img.append({ "name" : img_name, "time" : time(), "status" : faceMaskStatus })
       if faceMaskStatus != None: break
       sleep(0.5)
@@ -66,7 +105,7 @@ def main():
     for i in range(3): # maximum 3 attempts to take opimistic attendance
       img_name = f"{start}_p2_{len(phase_2_img)}.png"
       capture(IMG_PATH + img_name)
-      faceRecogStatus = recognizeFace(IMG_PATH + img_name)
+      faceRecogStatus = infer.recognizeFace(IMG_PATH + img_name)
       phase_2_img.append({ "name" : img_name, "time" : time(), "status" : faceRecogStatus })
       if faceRecogStatus != None: break
       sleep(0.5)
@@ -94,7 +133,7 @@ def main():
     for i in range(3): # maximum 3 attempts to detect face/mask/temperature
       img_name = f"{start}_p3_{len(phase_3_img)}.png"
       capture(IMG_PATH + img_name)
-      faceMaskTempStatus = detectFaceAndMask(IMG_PATH + img_name)
+      faceMaskTempStatus = infer.detectFaceAndMask(IMG_PATH + img_name)
       t = getTemperature()
       phase_3_img.append({ "name" : img_name, "time" : time(), "status" : faceMaskTempStatus, "temperature" : t })
       if faceMaskTempStatus != None:
