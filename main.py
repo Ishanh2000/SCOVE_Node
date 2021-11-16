@@ -10,16 +10,17 @@ import pickle
 import face_tflite
 import infer
 
-import RPi.GPIO as GPIO
 from lcd import clearLCD, writeLCD, rewriteLCD
 from mlx import getTemperature
 from prox import isMotion
+from gpiozero import Button
 
 from comm import queueEvent, queueAttendance
 
 IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
 SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
+b = Button(5)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(5, GPIO.IN)
@@ -33,7 +34,7 @@ def getUpdateFlag():
   n = 5
   sum = 0
   for _ in range(n):
-    sum += (1 - GPIO.input(5)) # input is 1 iff button is not pressed
+    sum += 1 if b.is_pressed else 0
     sleep(0.02) # 20 ms
   return (sum/n) >= 0.5
 
