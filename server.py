@@ -7,6 +7,8 @@ import json
 from bson import json_util
 from infer import face_labels
 from time import time
+from face_register import startTraining
+from threading import Thread
 
 IMG_PATH = "./img/"
 DAY = 86400 # length of a day in seconds
@@ -118,9 +120,10 @@ def register():
   #   { "name" : "imisra", "files" : ['..', '..'] },
   #   { "name" : "tulika", "files" : ['..', '..'] },
   # ] }
-  train = request.json.get("train")
-  if not train: return "Expected field \"train\" - an array", 400
-  # link face_register/main.py as train.py
 
-  
-  return "OK"
+  try:
+    Thread(target=startTraining, args=(request.json["train"],)).start()
+    return "Resource Allocated. Training Started.", 201
+
+  except:
+    return "Bad Request Format: Expected field \"train\" - an array", 400  
