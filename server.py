@@ -5,12 +5,13 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import json
 from bson import json_util
-from infer import face_labels
 from time import time
-from face_register import startTraining
 from threading import Thread
 from os.path import getmtime
 from base64 import b64encode
+
+from infer import face_labels
+from face_register import startTraining
 
 IMG_PATH = "./img/"
 DAY = 86400 # length of a day in seconds

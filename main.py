@@ -21,7 +21,10 @@ IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
 SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
 b = Button(5)
-
+LOG_PHASE_1 = True
+LOG_PHASE_2 = True
+LOG_PHASE_3 = True
+LOG_ATT = True # do not change to false
 
 def capture(imgPath):
   v = cv2.VideoCapture(0)
@@ -85,7 +88,7 @@ def main():
     
     isMischief = (faceMaskStatus == None)
 
-    Thread(target = queueEvent, args=(start, 1, phase_1_img, isMischief)).start() # will delete images later
+    if LOG_PHASE_1 : Thread(target = queueEvent, args=(start, 1, phase_1_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -111,7 +114,7 @@ def main():
     
     isMischief = (faceRecogStatus == None)
 
-    Thread(target = queueEvent, args=(start, 2, phase_2_img, isMischief)).start() # will delete images later
+    if LOG_PHASE_2 : Thread(target = queueEvent, args=(start, 2, phase_2_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -142,7 +145,7 @@ def main():
     
     isMischief = (faceMaskTempStatus == None)
 
-    Thread(target = queueEvent, args=(start, 3, phase_3_img, isMischief)).start() # will delete images later
+    if LOG_PHASE_3 : Thread(target = queueEvent, args=(start, 3, phase_3_img, isMischief)).start() # will delete images later
 
     if isMischief:
       rewriteLCD("Will report\r\nmischief!")
@@ -155,7 +158,7 @@ def main():
     if faceMaskTempStatus["maskLabel"] != "masked": disallowReason += "No/Improper mask\r\n"
     if avg_t > TEMPERATURE_THRESHOLD: disallowReason += "High temp.\r\n"
 
-    Thread(target = queueAttendance, args=(start, time(), faceRecogStatus["faceLabel"], avg_t, faceMaskTempStatus["maskLabel"], disallowReason)).start()
+    if LOG_ATT : Thread(target = queueAttendance, args=(start, time(), faceRecogStatus["faceLabel"], avg_t, faceMaskTempStatus["maskLabel"], disallowReason)).start()
 
     if disallowReason == "": rewriteLCD("Please enter")
     else:

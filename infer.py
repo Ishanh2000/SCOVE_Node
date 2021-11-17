@@ -1,4 +1,4 @@
-# AUM SHREEGANEHSAAYA NAMAH||
+# AUM SHREEGANEHSAAYA NAMAH|| AUM SHREEHANUMATE NAMAH||
 import cv2
 import numpy as np
 from face_tflite import get_embeddings, face_classifier
