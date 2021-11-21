@@ -1,5 +1,5 @@
 # AUM SHREEGANESHAAYA NAMAH|| AUM SHREEHANUMATE NAMAH||
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # will cause problems if not using Raspberry Pi
 import time
 
 GPIO.setwarnings(False)

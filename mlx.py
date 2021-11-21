@@ -1,6 +1,6 @@
 # AUM SHREEGANESHAAYA NAMAH|| AUM SHREEHANUMATE NAMAH||
-from smbus2 import SMBus
-from mlx90614 import MLX90614
+from smbus2 import SMBus # will cause problems if not using Raspberry Pi
+from mlx90614 import MLX90614 # will cause problems if not using Raspberry Pi
 from sys import argv
 from time import sleep
 

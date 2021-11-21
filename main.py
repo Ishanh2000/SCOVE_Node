@@ -10,10 +10,10 @@ import pickle
 import face_tflite
 import infer
 
-from lcd import clearLCD, writeLCD, rewriteLCD
-from mlx import getTemperature
-from prox import isMotion
-from gpiozero import Button
+from lcd import clearLCD, writeLCD, rewriteLCD # will cause problems if not using Raspberry Pi
+from mlx import getTemperature # will cause problems if not using Raspberry Pi
+from prox import isMotion # will cause problems if not using Raspberry Pi
+from gpiozero import Button # will cause problems if not using Raspberry Pi
 
 from comm import queueEvent, queueAttendance
 
@@ -21,9 +21,10 @@ IMG_PATH = "./img/"
 TEMPERATURE_THRESHOLD = 30.0
 SERVER_URI = "http://ec2-18-222-200-30.us-east-2.compute.amazonaws.com:5000"
 b = Button(5)
-LOG_PHASE_1 = True
-LOG_PHASE_2 = True
-LOG_PHASE_3 = True
+# following have been set to False because of limited space on server
+LOG_PHASE_1 = False
+LOG_PHASE_2 = False
+LOG_PHASE_3 = False
 LOG_ATT = True # do not change to false
 
 def capture(imgPath):

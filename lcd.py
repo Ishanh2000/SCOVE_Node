@@ -1,5 +1,5 @@
 # AUM SHREEGANESHAAYA NAMAH|| AUM SHREEHANUMATE NAMAH||
-from RPLCD.i2c import CharLCD
+from RPLCD.i2c import CharLCD # will cause problems if not using Raspberry Pi
 from sys import argv
 from time import sleep
 
